@@ -1,149 +1,176 @@
-<svg width="100%" viewBox="0 0 680 720" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 1180 780" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Cloud Pulse Architecture</title>
+  <desc id="desc">Architecture diagram for Cloud Pulse Dashboard showing agents, SQS, Lambda scheduler, DynamoDB, dashboard live polling, and two compute servers.</desc>
+
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9fb3c8"/>
     </marker>
-  <mask id="imagine-text-gaps-ddokly" maskUnits="userSpaceOnUse"><rect x="0" y="0" width="680" height="720" fill="white"/><rect x="79.87861633300781" y="40.3055305480957" width="79.7705307006836" height="21.47225570678711" fill="black" rx="2"/><rect x="88.69221496582031" y="58.19442367553711" width="62.61555480957031" height="19.11113929748535" fill="black" rx="2"/><rect x="66.58627319335938" y="96.26387023925781" width="106.82743835449219" height="21.47225570678711" fill="black" rx="2"/><rect x="88.42658996582031" y="112.44442749023438" width="63.14680480957031" height="19.11113929748535" fill="black" rx="2"/><rect x="53.69236755371094" y="154.2638702392578" width="132.61524963378906" height="21.47225570678711" fill="black" rx="2"/><rect x="88.42658996582031" y="170.44442749023438" width="63.14680480957031" height="19.11113929748535" fill="black" rx="2"/><rect x="66.88140869140625" y="212.2638702392578" width="106.2371597290039" height="21.47225570678711" fill="black" rx="2"/><rect x="88.16465759277344" y="228.44442749023438" width="63.87628173828125" height="19.111124992370605" fill="black" rx="2"/><rect x="55.647666931152344" y="270.2638854980469" width="128.70465087890625" height="21.47225570678711" fill="black" rx="2"/><rect x="88.50037384033203" y="286.4444580078125" width="62.99923324584961" height="19.11113929748535" fill="black" rx="2"/><rect x="82.84476470947266" y="344.2638854980469" width="74.31045532226562" height="21.47225570678711" fill="black" rx="2"/><rect x="65.36882019042969" y="360.4444274902344" width="109.43392181396484" height="19.11113929748535" fill="black" rx="2"/><rect x="299.55029296875" y="170.2638702392578" width="80.89944458007812" height="21.47225570678711" fill="black" rx="2"/><rect x="304.0474548339844" y="189.44442749023438" width="72.0374755859375" height="19.11113929748535" fill="black" rx="2"/><rect x="214.96571350097656" y="163.19442749023438" width="32.068620681762695" height="19.11113929748535" fill="black" rx="2"/><rect x="309.2603759765625" y="297.26385498046875" width="61.74797439575195" height="21.47225570678711" fill="black" rx="2"/><rect x="285.077392578125" y="314.4444580078125" width="110.12885284423828" height="19.11113929748535" fill="black" rx="2"/><rect x="308.7918395996094" y="330.4444274902344" width="62.41633224487305" height="19.11113929748535" fill="black" rx="2"/><rect x="298.491455078125" y="452.26385498046875" width="83.22891235351562" height="21.47225570678711" fill="black" rx="2"/><rect x="289.78485107421875" y="471.4444580078125" width="100.56549835205078" height="19.111167907714844" fill="black" rx="2"/><rect x="358" y="388.1944274902344" width="43.74138641357422" height="19.11113929748535" fill="black" rx="2"/><rect x="515.0751953125" y="40.3055305480957" width="89.84954833984375" height="21.47225570678711" fill="black" rx="2"/><rect x="501.8234558105469" y="58.19442367553711" width="116.35306549072266" height="19.11113929748535" fill="black" rx="2"/><rect x="529.839599609375" y="99.26387786865234" width="60.32084274291992" height="21.47225570678711" fill="black" rx="2"/><rect x="518.2664184570312" y="132.44442749023438" width="83.57892608642578" height="19.11113929748535" fill="black" rx="2"/><rect x="494.9393310546875" y="176.44442749023438" width="130.2317657470703" height="19.11113929748535" fill="black" rx="2"/><rect x="490.0732116699219" y="220.44442749023438" width="139.85354614257812" height="19.11113929748535" fill="black" rx="2"/><rect x="528.4265747070312" y="289.26385498046875" width="63.14680480957031" height="21.47225570678711" fill="black" rx="2"/><rect x="519.686767578125" y="322.4444274902344" width="80.73515319824219" height="19.11113929748535" fill="black" rx="2"/><rect x="492.5118103027344" y="366.4444274902344" width="134.9763641357422" height="19.11113929748535" fill="black" rx="2"/><rect x="508.0361328125" y="410.4444274902344" width="103.92769622802734" height="19.11113929748535" fill="black" rx="2"/><rect x="430.3016357421875" y="298.1944274902344" width="33.39674949645996" height="19.11113929748535" fill="black" rx="2"/><rect x="263.36248779296875" y="516.1943969726562" width="153.4468994140625" height="19.11113929748535" fill="black" rx="2"/><rect x="299.51708984375" y="582.2638549804688" width="80.96585083007812" height="21.47225570678711" fill="black" rx="2"/><rect x="267.82647705078125" y="601.4444580078125" width="144.49703979492188" height="19.11113929748535" fill="black" rx="2"/><rect x="41.52777862548828" y="664.1944580078125" width="73.2306137084961" height="19.11113929748535" fill="black" rx="2"/><rect x="142" y="664.1944580078125" width="95.46085357666016" height="19.11113929748535" fill="black" rx="2"/><rect x="262" y="664.1944580078125" width="75.4342041015625" height="19.11113929748535" fill="black" rx="2"/><rect x="372" y="664.1944580078125" width="114.68553161621094" height="19.11113929748535" fill="black" rx="2"/></mask></defs>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3dd68c"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#fb923c"/>
+    </marker>
+    <style>
+      .bg { fill: #08111f; }
+      .title { fill: #f8fafc; font: 700 30px Segoe UI, Arial, sans-serif; }
+      .subtitle { fill: #8ea7c2; font: 400 14px Segoe UI, Arial, sans-serif; }
+      .zone { fill: #111c2e; stroke: #29415f; stroke-width: 1.5; }
+      .zone-agent { fill: #171737; stroke: #6d5dfc; }
+      .zone-scheduler { fill: #0e2a26; stroke: #31c48d; }
+      .zone-server { fill: #23170e; stroke: #fb923c; }
+      .zone-dashboard { fill: #0d2240; stroke: #60a5fa; }
+      .box { fill: #172338; stroke: #344963; stroke-width: 1.2; }
+      .box-agent { fill: #211b4f; stroke: #8b7cf6; }
+      .box-scheduler { fill: #0f3a32; stroke: #3dd68c; }
+      .box-server { fill: #2d1c0f; stroke: #fb923c; }
+      .box-idle { fill: #1f2937; stroke: #94a3b8; }
+      .box-dashboard { fill: #0f315c; stroke: #60a5fa; }
+      .label { fill: #eef6ff; font: 700 15px Segoe UI, Arial, sans-serif; }
+      .small { fill: #a9bdd3; font: 400 12px Segoe UI, Arial, sans-serif; }
+      .tiny { fill: #8ea7c2; font: 400 11px Segoe UI, Arial, sans-serif; }
+      .mono { fill: #b6c7db; font: 400 11px Consolas, monospace; }
+      .green { fill: #86efac; }
+      .blue { fill: #93c5fd; }
+      .orange { fill: #fdba74; }
+      .muted { fill: #94a3b8; }
+      .line { fill: none; stroke: #9fb3c8; stroke-width: 1.6; marker-end: url(#arrow); }
+      .line-green { fill: none; stroke: #3dd68c; stroke-width: 1.8; marker-end: url(#arrow-green); }
+      .line-blue { fill: none; stroke: #60a5fa; stroke-width: 1.8; marker-end: url(#arrow-blue); }
+      .line-orange { fill: none; stroke: #fb923c; stroke-width: 1.8; marker-end: url(#arrow-orange); }
+      .dash { stroke-dasharray: 6 5; }
+      .chip { fill: #223148; stroke: #40546f; }
+    </style>
+  </defs>
 
-  <!-- AGENT EC2 container -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="30" y="30" width="180" height="290" rx="12" stroke-width="0.5" fill-opacity="0.08" style="fill:rgb(60, 52, 137);stroke:rgb(175, 169, 236);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="120" y="56" text-anchor="middle" style="fill:rgb(206, 203, 246);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:auto">Agent EC2</text>
-    <text x="120" y="72" text-anchor="middle" style="fill:rgb(175, 169, 236);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">always on</text>
-  </g>
+  <rect class="bg" x="0" y="0" width="1180" height="780"/>
 
-  <!-- 4 agent boxes -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="46" y="88" width="148" height="44" rx="6" stroke-width="0.5" style="fill:rgb(60, 52, 137);stroke:rgb(175, 169, 236);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="120" y="107" text-anchor="middle" dominant-baseline="central" style="fill:rgb(206, 203, 246);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Payment agent</text>
-    <text x="120" y="122" text-anchor="middle" dominant-baseline="central" style="fill:rgb(175, 169, 236);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">urgency 9</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="46" y="146" width="148" height="44" rx="6" stroke-width="0.5" style="fill:rgb(60, 52, 137);stroke:rgb(175, 169, 236);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="120" y="165" text-anchor="middle" dominant-baseline="central" style="fill:rgb(206, 203, 246);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Recommend agent</text>
-    <text x="120" y="180" text-anchor="middle" dominant-baseline="central" style="fill:rgb(175, 169, 236);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">urgency 6</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="46" y="204" width="148" height="44" rx="6" stroke-width="0.5" style="fill:rgb(60, 52, 137);stroke:rgb(175, 169, 236);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="120" y="223" text-anchor="middle" dominant-baseline="central" style="fill:rgb(206, 203, 246);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Weather agent</text>
-    <text x="120" y="238" text-anchor="middle" dominant-baseline="central" style="fill:rgb(175, 169, 236);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">urgency 4</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="46" y="262" width="148" height="44" rx="6" stroke-width="0.5" style="fill:rgb(60, 52, 137);stroke:rgb(175, 169, 236);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="120" y="281" text-anchor="middle" dominant-baseline="central" style="fill:rgb(206, 203, 246);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Notification agent</text>
-    <text x="120" y="296" text-anchor="middle" dominant-baseline="central" style="fill:rgb(175, 169, 236);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">urgency 3</text>
-  </g>
+  <text class="title" x="40" y="50">Cloud Pulse Dashboard</text>
+  <text class="subtitle" x="40" y="74">Agent-based CPU bidding, Lambda scheduling, live dashboard telemetry, and dynamic reallocation</text>
 
-  <!-- Groq LLM box -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="46" y="336" width="148" height="44" rx="6" stroke-width="0.5" style="fill:rgb(99, 56, 6);stroke:rgb(239, 159, 39);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="120" y="355" text-anchor="middle" dominant-baseline="central" style="fill:rgb(250, 199, 117);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Groq LLM</text>
-    <text x="120" y="370" text-anchor="middle" dominant-baseline="central" style="fill:rgb(239, 159, 39);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">reasons per agent</text>
-  </g>
-  <!-- Arrow agents to Groq -->
-  <line x1="120" y1="306" x2="120" y2="334" stroke-dasharray="3 2" marker-end="url(#arrow)" style="fill:none;stroke:rgb(156, 154, 146);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-dasharray:3px, 2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Agent and dashboard EC2 -->
+  <rect class="zone zone-agent" x="40" y="110" width="300" height="520" rx="18"/>
+  <text class="label" x="64" y="142">Agent / Dashboard EC2</text>
+  <text class="mono" x="64" y="162">98.89.93.192:8080</text>
 
-  <!-- SQS box -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="270" y="158" width="140" height="56" rx="8" stroke-width="0.5" style="fill:rgb(8, 80, 65);stroke:rgb(93, 202, 165);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="340" y="181" text-anchor="middle" dominant-baseline="central" style="fill:rgb(159, 225, 203);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">SQS queue</text>
-    <text x="340" y="199" text-anchor="middle" dominant-baseline="central" style="fill:rgb(93, 202, 165);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">bids-queue</text>
-  </g>
+  <rect class="box box-agent" x="65" y="190" width="250" height="54" rx="10"/>
+  <text class="label" x="190" y="213" text-anchor="middle">4 App Agents</text>
+  <text class="small" x="190" y="232" text-anchor="middle">payment, recommendation, weather, notification</text>
 
-  <!-- Arrow agents to SQS -->
-  <path d="M194 185 L268 185" fill="none" marker-end="url(#arrow)" stroke="#1D9E75" style="fill:none;stroke:rgb(156, 154, 146);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="231" y="177" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">bids</text>
+  <rect class="box box-agent" x="65" y="264" width="250" height="62" rx="10"/>
+  <text class="label" x="190" y="288" text-anchor="middle">agent.py</text>
+  <text class="small" x="190" y="307" text-anchor="middle">polls /load, sends bids every 10s</text>
 
-  <!-- Lambda box -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="270" y="280" width="140" height="76" rx="8" stroke-width="0.5" style="fill:rgb(8, 80, 65);stroke:rgb(93, 202, 165);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="340" y="308" text-anchor="middle" dominant-baseline="central" style="fill:rgb(159, 225, 203);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Lambda</text>
-    <text x="340" y="324" text-anchor="middle" dominant-baseline="central" style="fill:rgb(93, 202, 165);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">scoring + bin pack</text>
-    <text x="340" y="340" text-anchor="middle" dominant-baseline="central" style="fill:rgb(93, 202, 165);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">every 30s</text>
-  </g>
+  <rect class="box box-agent" x="65" y="346" width="250" height="62" rx="10"/>
+  <text class="label" x="190" y="370" text-anchor="middle">Groq LLM</text>
+  <text class="small" x="190" y="389" text-anchor="middle">short reasoning text only</text>
 
-  <!-- Arrow SQS to Lambda -->
-  <line x1="340" y1="214" x2="340" y2="278" marker-end="url(#arrow)" stroke="#1D9E75" style="fill:none;stroke:rgb(156, 154, 146);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <rect class="box box-dashboard" x="65" y="438" width="250" height="118" rx="12"/>
+  <text class="label" x="190" y="464" text-anchor="middle">Cloud Pulse Dashboard</text>
+  <text class="small" x="190" y="486" text-anchor="middle">dashboard_api.py + dashboard.html</text>
+  <text class="small" x="190" y="508" text-anchor="middle">shows allocated CPU + live CPU sum</text>
+  <text class="small" x="190" y="530" text-anchor="middle">fast-trigger on idle spikes / downshift</text>
 
-  <!-- DynamoDB box -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="270" y="440" width="140" height="56" rx="8" stroke-width="0.5" style="fill:rgb(8, 80, 65);stroke:rgb(93, 202, 165);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="340" y="463" text-anchor="middle" dominant-baseline="central" style="fill:rgb(159, 225, 203);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">DynamoDB</text>
-    <text x="340" y="481" text-anchor="middle" dominant-baseline="central" style="fill:rgb(93, 202, 165);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">allocations table</text>
-  </g>
+  <rect class="chip" x="65" y="580" width="250" height="28" rx="14"/>
+  <text class="tiny" x="190" y="599" text-anchor="middle">start with ~/start_agents.sh</text>
 
-  <!-- Arrow Lambda to DynamoDB -->
-  <line x1="340" y1="356" x2="340" y2="438" marker-end="url(#arrow)" stroke="#1D9E75" style="fill:none;stroke:rgb(156, 154, 146);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="362" y="402" text-anchor="start" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:auto">writes</text>
+  <!-- Scheduler services -->
+  <rect class="zone zone-scheduler" x="420" y="110" width="330" height="520" rx="18"/>
+  <text class="label" x="444" y="142">AWS Scheduler Layer</text>
+  <text class="small" x="444" y="162">SQS + Lambda + DynamoDB + EventBridge</text>
 
-  <!-- SERVER EC2s container -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="470" y="30" width="180" height="430" rx="12" stroke-width="0.5" fill-opacity="0.08" style="fill:rgb(113, 43, 19);stroke:rgb(240, 153, 123);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="56" text-anchor="middle" style="fill:rgb(245, 196, 179);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:auto">Server EC2s</text>
-    <text x="560" y="72" text-anchor="middle" style="fill:rgb(240, 153, 123);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">start / stop via SSM</text>
-  </g>
+  <rect class="box box-scheduler" x="470" y="190" width="230" height="62" rx="12"/>
+  <text class="label" x="585" y="215" text-anchor="middle">SQS bids-queue</text>
+  <text class="small" x="585" y="235" text-anchor="middle">agent bids wait here</text>
 
-  <!-- Server 1 -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="486" y="88" width="148" height="170" rx="8" stroke-width="0.5" fill-opacity="0.3" style="fill:rgb(113, 43, 19);stroke:rgb(240, 153, 123);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="110" text-anchor="middle" dominant-baseline="central" style="fill:rgb(245, 196, 179);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Server 1</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="496" y="122" width="128" height="36" rx="5" stroke-width="0.5" style="fill:rgb(113, 43, 19);stroke:rgb(240, 153, 123);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="142" text-anchor="middle" dominant-baseline="central" style="fill:rgb(240, 153, 123);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">payment-app</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="496" y="166" width="128" height="36" rx="5" stroke-width="0.5" style="fill:rgb(113, 43, 19);stroke:rgb(240, 153, 123);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="186" text-anchor="middle" dominant-baseline="central" style="fill:rgb(240, 153, 123);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">recommendation-app</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="496" y="210" width="128" height="36" rx="5" stroke-width="0.5" style="fill:rgb(68, 68, 65);stroke:rgb(180, 178, 169);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="230" text-anchor="middle" dominant-baseline="central" style="fill:rgb(180, 178, 169);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">weather-app (stopped)</text>
-  </g>
+  <rect class="box box-scheduler" x="470" y="294" width="230" height="96" rx="12"/>
+  <text class="label" x="585" y="320" text-anchor="middle">Lambda scheduler</text>
+  <text class="small" x="585" y="342" text-anchor="middle">score bids + bin pack</text>
+  <text class="small" x="585" y="362" text-anchor="middle">BID_HIGH / BID_SPLIT / DEFERRED / IDLE</text>
 
-  <!-- Server 2 -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="486" y="278" width="148" height="170" rx="8" stroke-width="0.5" fill-opacity="0.3" style="fill:rgb(113, 43, 19);stroke:rgb(240, 153, 123);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="300" text-anchor="middle" dominant-baseline="central" style="fill:rgb(245, 196, 179);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Server 2</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="496" y="312" width="128" height="36" rx="5" stroke-width="0.5" style="fill:rgb(113, 43, 19);stroke:rgb(240, 153, 123);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="332" text-anchor="middle" dominant-baseline="central" style="fill:rgb(240, 153, 123);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">weather-app</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="496" y="356" width="128" height="36" rx="5" stroke-width="0.5" style="fill:rgb(68, 68, 65);stroke:rgb(180, 178, 169);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="376" text-anchor="middle" dominant-baseline="central" style="fill:rgb(180, 178, 169);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">notification (deferred)</text>
-  </g>
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="496" y="400" width="128" height="36" rx="5" stroke-width="0.5" style="fill:rgb(68, 68, 65);stroke:rgb(180, 178, 169);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="560" y="420" text-anchor="middle" dominant-baseline="central" style="fill:rgb(180, 178, 169);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">others (stopped)</text>
-  </g>
+  <rect class="box box-scheduler" x="470" y="432" width="230" height="68" rx="12"/>
+  <text class="label" x="585" y="458" text-anchor="middle">DynamoDB allocations</text>
+  <text class="small" x="585" y="480" text-anchor="middle">latest cycle + server_load + idle</text>
 
-  <!-- Arrow Lambda to Servers (SSM) -->
-  <path d="M410 318 L484 318" fill="none" marker-end="url(#arrow)" stroke="#D85A30" style="fill:none;stroke:rgb(156, 154, 146);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="447" y="312" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">SSM</text>
+  <rect class="box box-scheduler" x="470" y="536" width="230" height="62" rx="12"/>
+  <text class="label" x="585" y="561" text-anchor="middle">EventBridge</text>
+  <text class="small" x="585" y="581" text-anchor="middle">regular scheduler cycles</text>
 
-  <!-- Agent polls /load from servers -->
-  <path d="M194 358 Q340 500 484 358" fill="none" stroke="#7F77DD" stroke-width="0.8" stroke-dasharray="4 3" marker-end="url(#arrow)" style="fill:none;stroke:rgb(127, 119, 221);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-dasharray:4px, 3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="340" y="530" text-anchor="middle" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">agents poll /load endpoint</text>
+  <!-- Compute servers -->
+  <rect class="zone zone-server" x="830" y="110" width="310" height="520" rx="18"/>
+  <text class="label" x="854" y="142">Compute EC2 Servers</text>
+  <text class="small" x="854" y="162">Lambda starts/stops apps through SSM</text>
 
-  <!-- Dashboard box -->
-  <g style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <rect x="270" y="570" width="140" height="56" rx="8" stroke-width="0.5" style="fill:rgb(12, 68, 124);stroke:rgb(133, 183, 235);color:rgb(255, 255, 255);stroke-width:0.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <text x="340" y="593" text-anchor="middle" dominant-baseline="central" style="fill:rgb(181, 212, 244);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:14px;font-weight:500;text-anchor:middle;dominant-baseline:central">Dashboard</text>
-    <text x="340" y="611" text-anchor="middle" dominant-baseline="central" style="fill:rgb(133, 183, 235);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:central">React, reads DynamoDB</text>
-  </g>
+  <rect class="box box-server" x="860" y="190" width="250" height="160" rx="14"/>
+  <text class="label" x="985" y="216" text-anchor="middle">Server 1</text>
+  <text class="mono" x="985" y="236" text-anchor="middle">44.219.23.100 | 100 CPU</text>
+  <rect class="chip" x="884" y="260" width="202" height="26" rx="8"/>
+  <text class="small" x="985" y="278" text-anchor="middle">recommendation-app</text>
+  <rect class="chip" x="884" y="296" width="202" height="26" rx="8"/>
+  <text class="small" x="985" y="314" text-anchor="middle">allocated / squeezed / idle</text>
 
-  <!-- Arrow DynamoDB to Dashboard -->
-  <line x1="340" y1="496" x2="340" y2="568" marker-end="url(#arrow)" stroke="#378ADD" mask="url(#imagine-text-gaps-ddokly)" style="fill:none;stroke:rgb(156, 154, 146);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <rect class="box box-server" x="860" y="390" width="250" height="170" rx="14"/>
+  <text class="label" x="985" y="416" text-anchor="middle">Server 2</text>
+  <text class="mono" x="985" y="436" text-anchor="middle">54.209.233.61 | 100 CPU</text>
+  <rect class="chip" x="884" y="460" width="202" height="26" rx="8"/>
+  <text class="small" x="985" y="478" text-anchor="middle">payment-app</text>
+  <rect class="chip" x="884" y="496" width="202" height="26" rx="8"/>
+  <text class="small" x="985" y="514" text-anchor="middle">weather / notification</text>
+  <text class="tiny" x="985" y="542" text-anchor="middle">stopped by process path + app port</text>
+
+  <!-- Main data flow arrows -->
+  <path class="line-green" d="M 315 220 C 370 220 405 220 468 220"/>
+  <text class="tiny green" x="390" y="207" text-anchor="middle">bids</text>
+
+  <path class="line-green" d="M 585 252 L 585 292"/>
+  <text class="tiny green" x="603" y="276">drain</text>
+
+  <path class="line-green" d="M 585 390 L 585 430"/>
+  <text class="tiny green" x="603" y="414">write result</text>
+
+  <path class="line-green" d="M 585 536 L 585 392"/>
+  <text class="tiny green" x="612" y="528">invoke</text>
+
+  <path class="line-orange" d="M 700 342 C 765 342 790 342 858 285"/>
+  <text class="tiny orange" x="778" y="316" text-anchor="middle">SSM start/stop</text>
+
+  <path class="line-orange" d="M 700 354 C 770 390 800 435 858 475"/>
+  <text class="tiny orange" x="778" y="430" text-anchor="middle">SSM start/stop</text>
+
+  <path class="line-blue" d="M 470 466 C 410 466 370 486 317 494"/>
+  <text class="tiny blue" x="398" y="452" text-anchor="middle">read state</text>
+
+  <path class="line-blue dash" d="M 315 496 C 382 535 420 566 468 566"/>
+  <text class="tiny blue" x="390" y="548" text-anchor="middle">fast trigger</text>
+
+  <path class="line-blue dash" d="M 315 520 C 500 690 760 650 860 540"/>
+  <text class="tiny blue" x="600" y="668" text-anchor="middle">dashboard polls /load for live CPU</text>
+
+  <path class="line dash" d="M 315 295 C 500 120 720 120 860 230"/>
+  <text class="tiny muted" x="590" y="108" text-anchor="middle">agents poll /load endpoints</text>
+
+  <path class="line" d="M 190 326 L 190 344"/>
+  <text class="tiny orange" x="214" y="339">reasoning</text>
+
+  <!-- Rules panel -->
+  <rect class="zone" x="40" y="665" width="1100" height="72" rx="16"/>
+  <text class="label" x="64" y="695">Scheduling rules</text>
+  <text class="small" x="64" y="719">Score = load + urgency + wait time + deferred count</text>
+  <text class="small" x="360" y="719">Max allocation per app: 70 CPU</text>
+  <text class="small" x="620" y="719">Split only if gap &lt;= 30 CPU</text>
+  <text class="small" x="850" y="719">Dashboard reconciles live vs allocated CPU</text>
 
   <!-- Legend -->
-  <rect x="30" y="668" width="10" height="10" rx="2" fill="#7F77DD" style="fill:rgb(127, 119, 221);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="46" y="678" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:auto">Agent layer</text>
-  <rect x="130" y="668" width="10" height="10" rx="2" fill="#1D9E75" style="fill:rgb(29, 158, 117);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="146" y="678" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:auto">Scheduler layer</text>
-  <rect x="250" y="668" width="10" height="10" rx="2" fill="#D85A30" style="fill:rgb(216, 90, 48);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="266" y="678" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:auto">Server layer</text>
-  <rect x="360" y="668" width="10" height="10" rx="2" fill="#888780" style="fill:rgb(136, 135, 128);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <text x="376" y="678" style="fill:rgb(194, 192, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:12px;font-weight:400;text-anchor:start;dominant-baseline:auto">Stopped / deferred</text>
+  <rect x="40" y="750" width="12" height="12" rx="2" fill="#6d5dfc"/>
+  <text class="tiny" x="60" y="761">Agent/dashboard EC2</text>
+  <rect x="210" y="750" width="12" height="12" rx="2" fill="#31c48d"/>
+  <text class="tiny" x="230" y="761">Scheduler services</text>
+  <rect x="370" y="750" width="12" height="12" rx="2" fill="#fb923c"/>
+  <text class="tiny" x="390" y="761">Compute servers</text>
+  <rect x="520" y="750" width="12" height="12" rx="2" fill="#60a5fa"/>
+  <text class="tiny" x="540" y="761">Live dashboard feedback</text>
 </svg>
