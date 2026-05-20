@@ -1,0 +1,47 @@
+# Server-1
+ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100 (access Server-1)
+ps aux | grep app.py (view which apps are running on Server-1)
+exit (to return to ur own CLI)
+
+# Server-2
+ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61 (access Server-2)
+ps aux | grep app.py (view which apps are running on Server-2)
+exit (to return to ur own CLI)
+
+# Agent / dashboard EC2 
+ssh -i "cloud-project-key.pem" ec2-user@98.89.93.192 (access agent Server)
+screen -ls (to check if all apps are running with their agents)
+exit (to return to ur own CLI)
+
+# To Update all Flask apps on both compute servers
+scp -i "cloud-project-key.pem" "Compute 2\cloud_proj\app.py" ec2-user@44.219.23.100:~/apps/payment-app/app.py
+scp -i "cloud-project-key.pem" "Compute 2\cloud_proj\app.py" ec2-user@54.209.233.61:~/apps/payment-app/app.py
+
+scp -i "cloud-project-key.pem" "Compute 2\cloud_proj2\flask_app\app.py" ec2-user@44.219.23.100:~/apps/recommendation-app/app.py
+scp -i "cloud-project-key.pem" "Compute 2\cloud_proj2\flask_app\app.py" ec2-user@54.209.233.61:~/apps/recommendation-app/app.py
+
+scp -i "cloud-project-key.pem" "Compute 2\Weather.py" ec2-user@44.219.23.100:~/apps/weather-app/app.py
+scp -i "cloud-project-key.pem" "Compute 2\Weather.py" ec2-user@54.209.233.61:~/apps/weather-app/app.py
+
+scp -i "cloud-project-key.pem" "Compute 2\Notification.py" ec2-user@44.219.23.100:~/apps/notification-app/app.py
+scp -i "cloud-project-key.pem" "Compute 2\Notification.py" ec2-user@54.209.233.61:~/apps/notification-app/app.py
+
+# Restart all apps on both EC2 instances after updation
+ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100
+pkill -f app.py
+~/start_apps.sh
+ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61
+pkill -f app.py
+~/start_apps.sh
+
+# Update agents and dashboard on agent EC2
+scp -i "cloud-project-key.pem" "agent.py" ec2-user@98.89.93.192:~/agent.py
+scp -i "cloud-project-key.pem" "dashboard_api.py" ec2-user@98.89.93.192:~/dashboard_api.py
+scp -i "cloud-project-key.pem" "dashboard.html" ec2-user@98.89.93.192:~/dashboard.html
+
+# Restart dashboard and agents on agent EC2
+ssh -i "cloud-project-key.pem" ec2-user@98.89.93.192
+pkill -f dashboard_api.py
+nohup python3 ~/dashboard_api.py > ~/dashboard.log 2>&1 &
+pkill -f agent.py
+~/start_agents.sh

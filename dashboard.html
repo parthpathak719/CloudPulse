@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0a0e1a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.2rem;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #0f2318;
+      border: 1px solid #16a34a;
+      color: #4ade80;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-pill.rebalancing {
+      background: #2d1f00;
+      border-color: #f59e0b;
+      color: #fbbf24;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.3
+      }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .server-card {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .server-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+    }
+
+    .server-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .server-ip {
+      font-size: 0.75rem;
+      color: #475569;
+      font-family: monospace;
+      margin-top: 0.2rem;
+    }
+
+    .capacity-col {
+      text-align: right;
+      min-width: 140px;
+    }
+
+    .load-bar-wrap {
+      background: #1e293b;
+      border-radius: 999px;
+      height: 6px;
+      width: 140px;
+      overflow: hidden;
+      margin-bottom: 0.3rem;
+    }
+
+    .load-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      transition: width 0.6s ease;
+    }
+
+    .load-bar.full {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+    }
+
+    .load-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-family: monospace;
+      text-align: right;
+    }
+
+    .load-label.live-sum {
+      color: #60a5fa;
+      margin-top: 0.1rem;
+    }
+
+    .app-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .app-card {
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      border-left: 3px solid #3b82f6;
+      background: #1a2235;
+    }
+
+    .app-card.payment {
+      border-color: #f59e0b;
+      background: #221a0e;
+    }
+
+    .app-card.recommendation {
+      border-color: #8b5cf6;
+      background: #1a1228;
+    }
+
+    .app-card.notification {
+      border-color: #ec4899;
+      background: #22101a;
+    }
+
+    .app-card.weather {
+      border-color: #06b6d4;
+      background: #0d2028;
+    }
+
+    .app-card.squeezed {
+      border-left-color: #f97316 !important;
+    }
+
+    .app-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+
+    .app-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .app-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .action-badge {
+      padding: 0.18rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      background: #1e3a5f;
+      color: #60a5fa;
+    }
+
+    .action-badge.BID_SPLIT {
+      background: #2d1b4e;
+      color: #a78bfa;
+    }
+
+    .action-badge.YIELD {
+      background: #1a2e1a;
+      color: #4ade80;
+    }
+
+    .action-badge.NEGOTIATE {
+      background: #2d1f00;
+      color: #fbbf24;
+    }
+
+    .score-pill {
+      background: #1e2d45;
+      border-radius: 6px;
+      padding: 0.18rem 0.55rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .cpu-section {
+      margin-bottom: 0.6rem;
+    }
+
+    .cpu-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.3rem;
+    }
+
+    .cpu-label {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    .cpu-value {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .cpu-value.squeezed-val {
+      color: #f97316;
+    }
+
+    .cpu-value .original {
+      font-size: 0.68rem;
+      font-weight: 400;
+      color: #64748b;
+      margin-left: 0.3rem;
+    }
+
+    .cpu-bar-wrap {
+      height: 5px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #1e293b;
+      display: flex;
+    }
+
+    .cpu-bar-alloc {
+      height: 100%;
+      border-radius: 999px 0 0 999px;
+      background: #3b82f6;
+      transition: width 0.5s ease;
+    }
+
+    .cpu-bar-alloc.squeezed-bar {
+      background: #f97316;
+    }
+
+    .cpu-bar-cut {
+      height: 100%;
+      background: #7f1d1d;
+      opacity: 0.6;
+      transition: width 0.5s ease;
+    }
+
+    .squeeze-note {
+      margin-top: 0.45rem;
+      font-size: 0.72rem;
+      color: #fb923c;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .reasoning {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-style: italic;
+      line-height: 1.6;
+      border-top: 1px solid #2d3748;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .empty-slot {
+      border: 1px dashed #2d3748;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      color: #475569;
+      font-size: 0.82rem;
+    }
+
+    .deferred-section {
+      background: #131f35;
+      border: 1px solid #2d3748;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .deferred-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .deferred-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #94a3b8;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .deferred-pill.idle {
+      border-color: #2563eb;
+      color: #93c5fd;
+    }
+
+    .none-label {
+      color: #64748b;
+      font-size: 0.82rem;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+      font-family: monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div>
+      <h1>⚡ Cloud Pulse Dashboard</h1>
+      <div class="subtitle">AI-powered resource allocation - live view</div>
+    </div>
+    <div class="status-pill">
+      <span class="dot"></span>
+      <span id="statusText">Connecting</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="server-card">
+      <div class="server-header">
+        <div>
+          <div class="server-name">🖥 Server 1</div>
+          <div class="server-ip">44.219.23.100</div>
+        </div>
+        <div class="capacity-col">
+          <div class="load-bar-wrap">
+            <div class="load-bar" id="s1Bar" style="width:0%"></div>
+          </div>
+          <div class="load-label" id="s1Load">Allocated — / 100 CPU</div>
+          <div class="load-label live-sum" id="s1LiveLoad">Live sum — / 100 CPU</div>
+        </div>
+      </div>
+      <div class="app-list" id="server1Apps">
+        <div class="empty-slot">Waiting for data...</div>
+      </div>
+    </div>
+    <div class="server-card">
+      <div class="server-header">
+        <div>
+          <div class="server-name">🖥 Server 2</div>
+          <div class="server-ip">54.209.233.61</div>
+        </div>
+        <div class="capacity-col">
+          <div class="load-bar-wrap">
+            <div class="load-bar" id="s2Bar" style="width:0%"></div>
+          </div>
+          <div class="load-label" id="s2Load">Allocated — / 100 CPU</div>
+          <div class="load-label live-sum" id="s2LiveLoad">Live sum — / 100 CPU</div>
+        </div>
+      </div>
+      <div class="app-list" id="server2Apps">
+        <div class="empty-slot">Waiting for data...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deferred-section">
+    <div class="section-label">⏸ Deferred / Idle Apps</div>
+    <div class="deferred-pills" id="deferredList">
+      <span class="none-label">None this cycle ✅</span>
+    </div>
+  </div>
+
+  <div class="footer" id="cycleInfo">Waiting for first cycle...</div>
+
+  <script>
+    const CAPACITY = 100;
+
+    const APP_COLORS = {
+      "payment-app": "payment",
+      "recommendation-app": "recommendation",
+      "notification-app": "notification",
+      "weather-app": "weather",
+    };
+    const APP_ICONS = {
+      "payment-app": "💳",
+      "recommendation-app": "🎯",
+      "notification-app": "🔔",
+      "weather-app": "🌤️",
+    };
+
+    function escapeHTML(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderApp(a) {
+      const cls = APP_COLORS[a.app] || "";
+      const icon = APP_ICONS[a.app] || "📦";
+      const action = a.action || "BID_HIGH";
+      const squeezed = a.squeezed === true || a.squeezed === "true";
+
+      const hasLive = a.live_cpu !== null && a.live_cpu !== undefined;
+      const allocated = parseFloat(a.allocated) || parseFloat(a.load) || 0;
+      const liveCpu = hasLive ? (parseFloat(a.live_cpu) || 0) : null;
+      const requested = parseFloat(a.original_load) || allocated;  // what app bid
+      const cut = squeezed ? Math.max(0, requested - allocated) : 0;
+
+      const allocatedPct = Math.min((allocated / CAPACITY) * 100, 100).toFixed(1);
+      const cutPct = Math.min((cut / CAPACITY) * 100, 100 - parseFloat(allocatedPct)).toFixed(1);
+
+      const squeezedClass = squeezed ? "squeezed" : "";
+      const cpuValClass = squeezed ? "cpu-value squeezed-val" : "cpu-value";
+      const barClass = squeezed ? "cpu-bar-alloc squeezed-bar" : "cpu-bar-alloc";
+
+      // The request is the bid snapshot used by the scheduler for this cycle.
+      const originalNote = squeezed && Math.abs(requested - allocated) > 1
+        ? `<span class="original">(requested ${requested.toFixed(1)} at cycle, got ${allocated.toFixed(1)})</span>`
+        : "";
+      const liveNote = hasLive
+        ? `<span class="original">(live ${liveCpu.toFixed(1)})</span>`
+        : `<span class="original">(live unavailable)</span>`;
+      const cpuDetails = `${originalNote}${liveNote}`;
+
+      // squeeze note uses allocated vs requested — not live vs requested
+      const squeezeNote = squeezed ? `
+      <div class="squeeze-note">
+        ⚠️ Squeezed — requested ${requested.toFixed(1)} CPU, got ${allocated.toFixed(1)} (${requested > 0 ? ((allocated / requested) * 100).toFixed(0) : 100}%)
+      </div>` : "";
+
+      return `
+      <div class="app-card ${cls} ${squeezedClass}">
+        <div class="app-top">
+          <div class="app-name-row">
+            <span style="font-size:1.1rem">${icon}</span>
+            <span class="app-name">${escapeHTML(a.app)}</span>
+            <span class="action-badge ${escapeHTML(action)}">${escapeHTML(action)}</span>
+          </div>
+          <span class="score-pill">Score ${escapeHTML(a.score)}</span>
+        </div>
+        <div class="cpu-section">
+          <div class="cpu-label-row">
+            <span class="cpu-label">Allocated CPU</span>
+            <span class="${cpuValClass}">${allocated.toFixed(1)}${cpuDetails}</span>
+          </div>
+          <div class="cpu-bar-wrap">
+            <div class="${barClass}" style="width:${allocatedPct}%"></div>
+            <div class="cpu-bar-cut"  style="width:${cutPct}%"></div>
+          </div>
+        </div>
+        ${squeezeNote}
+        <div class="reasoning">${escapeHTML(a.reasoning || "—")}</div>
+      </div>`;
+    }
+
+    function renderServer(apps, containerId) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = (!apps || apps.length === 0)
+        ? '<div class="empty-slot">No apps assigned this cycle</div>'
+        : apps.map(renderApp).join("");
+    }
+
+    function updateLoad(used, barId, loadId) {
+      const pct = Math.min((used / CAPACITY) * 100, 100);
+      const bar = document.getElementById(barId);
+      bar.style.width = pct + "%";
+      if (pct >= 95) bar.classList.add("full"); else bar.classList.remove("full");
+      document.getElementById(loadId).textContent = `Allocated ${parseFloat(used).toFixed(1)} / ${CAPACITY} CPU`;
+    }
+
+    function updateLiveSum(used, loadId) {
+      document.getElementById(loadId).textContent = `Live sum ${parseFloat(used).toFixed(1)} / ${CAPACITY} CPU`;
+    }
+
+    async function fetchState() {
+      try {
+        const res = await fetch("/api/state");
+        const data = await res.json();
+        if (data.error) { document.getElementById("statusText").textContent = "No data"; return; }
+
+        renderServer(data.servers["server-1"], "server1Apps");
+        renderServer(data.servers["server-2"], "server2Apps");
+
+        const load = data.server_load || {};
+        const liveLoad = data.live_server_load || {};
+        const s1 = load["server-1"] || 0;
+        const s2 = load["server-2"] || 0;
+        const liveS1 = liveLoad["server-1"] || 0;
+        const liveS2 = liveLoad["server-2"] || 0;
+
+        updateLoad(s1, "s1Bar", "s1Load");
+        updateLoad(s2, "s2Bar", "s2Load");
+        updateLiveSum(liveS1, "s1LiveLoad");
+        updateLiveSum(liveS2, "s2LiveLoad");
+
+        if (data.rebalancing) {
+          document.getElementById("statusText").textContent = "Rebalancing...";
+          document.querySelector(".status-pill").classList.add("rebalancing");
+        } else {
+          document.querySelector(".status-pill").classList.remove("rebalancing");
+          document.getElementById("statusText").textContent = "Live";
+        }
+
+        const deferred = data.deferred || [];
+        const idle = data.idle || [];
+        const idleLive = data.idle_live || {};
+        const inactiveLive = data.inactive_live || idleLive;
+        const liveSuffix = (appName) => {
+          const live = inactiveLive[appName];
+          return live === undefined || live === null ? "" : ` (live ${parseFloat(live).toFixed(1)})`;
+        };
+        const inactiveHTML = [
+          ...deferred.map(d => `<span class="deferred-pill">⏸ ${escapeHTML(d)}${escapeHTML(liveSuffix(d))}</span>`),
+          ...idle.map(d => {
+            return `<span class="deferred-pill idle">IDLE ${escapeHTML(d)}${escapeHTML(liveSuffix(d))}</span>`;
+          })
+        ].join("");
+        document.getElementById("deferredList").innerHTML = inactiveHTML.length === 0
+          ? '<span class="none-label">None this cycle ✅</span>'
+          : inactiveHTML;
+
+        const ts = new Date(data.timestamp * 1000).toLocaleTimeString();
+        document.getElementById("cycleInfo").textContent =
+          `Cycle ${data.cycle_id}  ·  Last updated ${ts}  ·  Allocated S1/S2 ${parseFloat(s1).toFixed(1)}/${parseFloat(s2).toFixed(1)} CPU  ·  Live S1/S2 ${parseFloat(liveS1).toFixed(1)}/${parseFloat(liveS2).toFixed(1)} CPU`;
+      } catch (e) {
+        document.getElementById("statusText").textContent = "Error";
+      }
+    }
+
+    fetchState();
+    setInterval(fetchState, 5000);
+  </script>
+</body>
+
+</html>
