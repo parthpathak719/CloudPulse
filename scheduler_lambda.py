@@ -26,19 +26,8 @@ ALL_APPS = [
     "notification-app",
 ]
 
-APP_PATHS = {
-    "payment-app": "/home/ec2-user/apps/payment-app/app.py",
-    "recommendation-app": "/home/ec2-user/apps/recommendation-app/app.py",
-    "weather-app": "/home/ec2-user/apps/weather-app/app.py",
-    "notification-app": "/home/ec2-user/apps/notification-app/app.py",
-}
 
-APP_LOGS = {
-    "payment-app": "/home/ec2-user/apps/payment-app/app.log",
-    "recommendation-app": "/home/ec2-user/apps/recommendation-app/app.log",
-    "weather-app": "/home/ec2-user/apps/weather-app/app.log",
-    "notification-app": "/home/ec2-user/apps/notification-app/app.log",
-}
+
 
 APP_PORTS = {
     "payment-app": 5000,
@@ -224,23 +213,21 @@ def allocate_bids(ranked_bids, servers):
 
 
 def start_command(app_name):
-    app_path = APP_PATHS[app_name]
-    log_path = APP_LOGS[app_name]
+    port = APP_PORTS[app_name]
     return (
-        f"if ! pgrep -f '{app_path}' >/dev/null; then "
-        f"nohup python3 {app_path} > {log_path} 2>&1 & "
+        f"if ! docker ps -q -f name={app_name} -f status=running | grep -q .; then "
+        f"docker stop {app_name} 2>/dev/null || true; "
+        f"docker rm {app_name} 2>/dev/null || true; "
+        f"docker run -d --name {app_name} -p {port}:{port} cloudpulse/{app_name}:latest; "
         "fi"
     )
 
 
 def stop_command(app_name):
-    port = APP_PORTS.get(app_name)
-    commands = [
-        f"sudo pkill -f '{APP_PATHS[app_name]}' || true",
-    ]
-    if port:
-        commands.append(f"sudo fuser -k {port}/tcp >/dev/null 2>&1 || true")
-    return "; ".join(commands)
+    return (
+        f"docker stop {app_name} 2>/dev/null || true; "
+        f"docker rm {app_name} 2>/dev/null || true"
+    )
 
 
 def send_ssm(instance_id, command, label):

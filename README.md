@@ -1,173 +1,111 @@
-# Cloud Pulse
+# CloudPulse: Dynamic Autonomous Resource Scheduler (Containerized Edition)
 
-Cloud Pulse is a live cloud resource scheduling demo. Four Flask apps compete for CPU across two EC2 servers. Agents send bids to SQS, a Lambda scheduler allocates capacity, and the dashboard shows which apps are allocated, squeezed, idle, or deferred.
+CloudPulse is an autonomous, container-native cloud resource scheduling and orchestration demo. Four Flask microservices compete for CPU across a cluster of two EC2 compute servers. Autonomous agents monitor container loads and submit bids through SQS. A Lambda-based control plane schedules capacity, persists state in DynamoDB, and dynamically reconciles resources on EC2 instances by stopping, removing, and starting Docker containers via AWS Systems Manager (SSM).
+
+A real-time, glassmorphic dark-mode dashboard displays allocations, squeezed metrics, deferred queues, and LLM-generated reasoning logs for all operations.
 
 ![Project architecture](project_architecture.svg)
 
+---
+
 ## What It Demonstrates
 
-- Two compute servers with `100 CPU` capacity each.
-- Four apps:
-  - `payment-app`
-  - `recommendation-app`
-  - `weather-app`
-  - `notification-app`
-- Agent-based bidding through SQS.
-- Lambda-based CPU allocation.
-- DynamoDB-backed scheduler state.
-- Live dashboard updates.
-- `BID_SPLIT` when an app can fit into partial remaining CPU.
-- Deferred apps when the available CPU is too low for a reasonable split.
-- Fast rebalancing when live CPU rises or falls.
+- **Decentralized Bidding**: Each application is monitored by an autonomous agent daemon that bids for CPU via Amazon SQS based on load and priority.
+- **Micro-Orchestration**: A centralized Lambda scheduler runs every few seconds to score bids, handle server allocations, split capacity, or defer starved services.
+- **Docker Isolation**: Microservices run as isolated Docker containers rather than bare-metal operating system processes, mapping ports dynamically.
+- **Cgroups CPU Tracking**: The services use `psutil.cpu_percent()`. Inside Docker namespaces, this automatically reads container-scoped CPU metrics (via cgroup `/proc/1/stat`) instead of host-wide metrics.
+- **Secure Control Plane**: The control plane reconciles states via AWS Systems Manager (SSM) Shell Commands, executing container cleanup (`docker stop && docker rm`) and runner procedures without needing any open SSH inbound rules in production.
+- **Generative AI Logs**: Groq APIs (Llama-3 model) generate human-like operational justifications for each application load shift on the live dashboard.
 
-## Main AWS Components
+---
 
-| Component | Purpose |
-| --- | --- |
-| EC2 Server 1 | Runs scheduled Flask apps |
-| EC2 Server 2 | Runs scheduled Flask apps |
-| Agent/Dashboard EC2 | Runs all app agents and the dashboard |
-| SQS `bids-queue` | Stores app bids before scheduling |
-| Lambda `scheduler` | Scores bids and allocates apps |
-| DynamoDB `allocations` | Stores the latest allocation cycle |
-| EventBridge | Invokes Lambda regularly |
-| SSM Run Command | Lets Lambda start and stop apps on EC2 |
-| Groq | Generates short reasoning text for the dashboard |
+## Technology Stack
 
-## Dashboard
+| Component | Technology / AWS Service | Purpose |
+| --- | --- | --- |
+| **Compute Nodes** | AWS EC2 Server-1 & Server-2 | Run containerized microservices under Docker |
+| **Management Node** | AWS Agent/Dashboard EC2 | Hosts polling agent daemons and the dashboard server |
+| **Microservices** | Python 3.11, Flask, Gunicorn | Port 5000 (Payment), 5001 (Recommendation), 5002 (Notification), 5003 (Weather) |
+| **Container Engine** | Docker Engine (slim python base) | Isolates runtimes and resources for microservices |
+| **Bidding Broker** | Amazon SQS `bids-queue` | Decoupled queue for storing SQS bid payloads |
+| **Decision Engine** | AWS Lambda `scheduler` | Scores bids, splits capacity, and makes allocation choices |
+| **Orchestration** | AWS SSM (Systems Manager) | Safely starts/stops Docker containers on compute nodes |
+| **State Storage** | Amazon DynamoDB `allocations` | Stores latest allocation tables and load statistics |
+| **Inference API** | Groq Llama-3 API | Dynamically writes operational reasoning logs |
+| **Web Console** | HTML5, Vanilla CSS3, Javascript | Beautiful dark-mode dashboard showing dynamic updates |
 
-Open:
+---
 
-```text
-http://98.89.93.192:8080
-```
+## Repository Structure
 
-The dashboard shows:
+* `docker/` — Docker configurations for the 4 microservices:
+  * `payment-app/` — Dockerfile & minimal Flask dependencies
+  * `recommendation-app/` — Dockerfile & Flask dependencies including `numpy`
+  * `weather-app/` — Dockerfile & Weather metrics requirements
+  * `notification-app/` — Dockerfile & Notification service requirements
+* `Compute 2/` — Core Flask microservice application source codes
+* `scheduler_lambda.py` — Updated Lambda scheduler that uses robust SSM-Docker reconciliation scripts
+* `agent.py` — Polling agent daemon that monitors containers and publishes SQS bids
+* `dashboard_api.py` — Reads DynamoDB allocation states and hosts the status API
+* `dashboard.html` — Glassmorphic frontend web interface
+* `commands.txt` — copy-paste operational cheat sheet
+* `EndtoEndProjectReport.md` — Extended system architecture, analogies, and detailed operational breakdown
 
-- allocated CPU per server
-- live CPU sum per server
-- allocated CPU and live CPU per app
-- squeezed apps with requested vs allocated CPU
-- idle/deferred apps
-- current scheduler cycle
+---
 
-## Before Running The Demo
+## Setup & Operational Guide
 
-One person should manually start these from AWS:
+The complete build and run instructions are detailed in the **[Walkthrough Guide](walkthrough.md)**. A quick summary of steps:
 
-1. EC2 Server 1
-2. EC2 Server 2
-3. Agent/Dashboard EC2
-4. EventBridge rule for the Lambda scheduler
-
-After that, use the Agent/Dashboard EC2 to start the demo.
-
-## Start The Demo
-
-SSH into the Agent/Dashboard EC2:
-
+### 1. Install Docker on Compute Nodes
+SSH into both Server-1 and Server-2, and run the one-time Docker installation sequence:
 ```bash
-ssh -i "cloud-project-key.pem" ec2-user@98.89.93.192
+sudo yum install docker -y
+sudo service docker start
+sudo usermod -aG docker ec2-user
+exit
 ```
+*Note: Re-SSH to apply user group configurations.*
 
-Start agents and dashboard:
-
+### 2. SCP Files and Build Container Images
+From your local workspace directory, upload all Dockerfiles, requirements, and source code files:
 ```bash
-~/start_agents.sh
+# Upload to Server-1 (Example for payment-app)
+scp -i "cloud-project-key.pem" "docker/payment-app/Dockerfile" ec2-user@44.219.23.100:~/apps/payment-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker/payment-app/requirements.txt" ec2-user@44.219.23.100:~/apps/payment-app/requirements.txt
+scp -i "cloud-project-key.pem" "Compute 2/cloud_proj/app.py" ec2-user@44.219.23.100:~/apps/payment-app/app.py
 ```
+*(Repeat for all 4 apps to both Server-1 and Server-2).*
 
-Important: `~/start_agents.sh` starts the four app agents and also starts the dashboard automatically.
-
-Check running agent screens:
-
+SSH into each server and trigger the Docker builds:
 ```bash
-screen -ls
+cd ~/apps/payment-app && docker build -t cloudpulse/payment-app:latest .
+cd ~/apps/recommendation-app && docker build -t cloudpulse/recommendation-app:latest .
+cd ~/apps/weather-app && docker build -t cloudpulse/weather-app:latest .
+cd ~/apps/notification-app && docker build -t cloudpulse/notification-app:latest .
 ```
 
-Expected screens:
+### 3. Deploy Lambda Scheduler
+Copy the contents of **[scheduler_lambda.py](scheduler_lambda.py)** and paste them into your AWS Lambda code editor, then hit **Deploy**.
 
-```text
-payment
-recommendation
-weather
-notification
-```
-
-There should be four agent screens. If more than four are listed, restart the agents cleanly:
-
-```bash
-pkill -f agent.py
-~/start_agents.sh
-screen -ls
-```
-
-Then open:
-
-```text
-http://98.89.93.192:8080
-```
-
-## Demo Flow
-
-1. Open the Cloud Pulse dashboard.
-2. Open one or more app pages.
-3. Click **Trigger Spike** on apps such as payment, weather, or notification.
-4. Watch the scheduler:
-   - higher scoring apps are allocated first
-   - apps may get squeezed with `BID_SPLIT`
-   - apps may be deferred if they cannot fit safely
-   - idle apps can become active and get scheduled
-   - allocations reduce again when live CPU drops
-
-Useful app pages:
-
-```text
-http://54.209.233.61:5000  payment-app
-http://44.219.23.100:5001  recommendation-app
-http://54.209.233.61:5002  notification-app
-http://54.209.233.61:5003  weather-app
-```
-
-Apps can move between servers during scheduling, so the dashboard is the source of truth.
-
-## Key Terms
-
-**Allocated CPU**  
-The CPU amount assigned by Lambda for the current scheduler cycle.
-
-**Live CPU**  
-The app's current CPU load from its `/load` endpoint.
-
-**BID_SPLIT**  
-The app requested more CPU than was available, but the remaining capacity was close enough to squeeze it in.
-
-**Deferred**  
-The app could not be allocated safely in the current cycle.
-
-**Idle**  
-The app is running with near-zero CPU so it can still be opened and spiked during the demo.
-
-## Troubleshooting
-
-If the dashboard is not opening, SSH into the Agent/Dashboard EC2 and run:
-
-```bash
-pkill -f dashboard_api.py
-nohup python3 ~/dashboard_api.py > ~/dashboard.log 2>&1 &
-```
-
-Use this only for restarting the dashboard by itself. For a normal full demo start, use:
-
+### 4. Run the Demo
+SSH into the Agent/Dashboard EC2 instance (`98.89.93.192`) and run the daemon script to launch the dashboard and the 4 agents:
 ```bash
 ~/start_agents.sh
 ```
 
-If the agents look duplicated:
+---
 
+## Monitoring and Testing Spikes
+
+Open the CloudPulse dashboard at `http://98.89.93.192:8080` in your web browser.
+
+To simulate traffic spikes and trigger SQS bidding and dynamic container rescheduling, send POST requests to the `/work` endpoint of the active microservice:
 ```bash
-pkill -f agent.py
-~/start_agents.sh
-screen -ls
-```
+# Spike the payment-app container (Server-2)
+curl -X POST http://54.209.233.61:5000/work -H "Content-Type: application/json" -d "{}"
 
-If Lambda looks slow or stale, check that the EventBridge rule is enabled and the Lambda function is deployed.
+# Spike the recommendation-app container (Server-1)
+curl -X POST http://44.219.23.100:5001/work -H "Content-Type: application/json" -d "{}"
+```
+Watch the dashboard rebalance dynamically! Squeezed apps will split resources, and lower-priority apps will automatically be stopped and deferred.

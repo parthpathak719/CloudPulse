@@ -1,47 +1,146 @@
-# Server-1
-ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100 (access Server-1)
-ps aux | grep app.py (view which apps are running on Server-1)
-exit (to return to ur own CLI)
+# ============================================================
+# CloudPulse Deployment Commands (Dockerized)
+# ============================================================
 
-# Server-2
-ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61 (access Server-2)
-ps aux | grep app.py (view which apps are running on Server-2)
-exit (to return to ur own CLI)
+# ----------------------------------------
+# ONE-TIME SETUP: Install Docker on Server-1
+# ----------------------------------------
+ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100
+sudo yum install docker -y
+sudo service docker start
+sudo usermod -aG docker ec2-user
+exit
+# Re-SSH so the docker group takes effect:
+ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100
+docker ps   # Should work without sudo
+exit
 
-# Agent / dashboard EC2 
-ssh -i "cloud-project-key.pem" ec2-user@98.89.93.192 (access agent Server)
-screen -ls (to check if all apps are running with their agents)
-exit (to return to ur own CLI)
+# ----------------------------------------
+# ONE-TIME SETUP: Install Docker on Server-2
+# ----------------------------------------
+ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61
+sudo yum install docker -y
+sudo service docker start
+sudo usermod -aG docker ec2-user
+exit
+# Re-SSH so the docker group takes effect:
+ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61
+docker ps   # Should work without sudo
+exit
 
-# To Update all Flask apps on both compute servers
+# ----------------------------------------
+# STEP 1: SCP Dockerfiles + app code to Server-1
+# ----------------------------------------
+# payment-app
+scp -i "cloud-project-key.pem" "docker\payment-app\Dockerfile" ec2-user@44.219.23.100:~/apps/payment-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\payment-app\requirements.txt" ec2-user@44.219.23.100:~/apps/payment-app/requirements.txt
 scp -i "cloud-project-key.pem" "Compute 2\cloud_proj\app.py" ec2-user@44.219.23.100:~/apps/payment-app/app.py
+
+# recommendation-app
+scp -i "cloud-project-key.pem" "docker\recommendation-app\Dockerfile" ec2-user@44.219.23.100:~/apps/recommendation-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\recommendation-app\requirements.txt" ec2-user@44.219.23.100:~/apps/recommendation-app/requirements.txt
+scp -i "cloud-project-key.pem" "Compute 2\cloud_proj2\flask_app\app.py" ec2-user@44.219.23.100:~/apps/recommendation-app/app.py
+
+# weather-app
+scp -i "cloud-project-key.pem" "docker\weather-app\Dockerfile" ec2-user@44.219.23.100:~/apps/weather-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\weather-app\requirements.txt" ec2-user@44.219.23.100:~/apps/weather-app/requirements.txt
+scp -i "cloud-project-key.pem" "Compute 2\Weather.py" ec2-user@44.219.23.100:~/apps/weather-app/app.py
+
+# notification-app
+scp -i "cloud-project-key.pem" "docker\notification-app\Dockerfile" ec2-user@44.219.23.100:~/apps/notification-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\notification-app\requirements.txt" ec2-user@44.219.23.100:~/apps/notification-app/requirements.txt
+scp -i "cloud-project-key.pem" "Compute 2\Notification.py" ec2-user@44.219.23.100:~/apps/notification-app/app.py
+
+# ----------------------------------------
+# STEP 2: SCP Dockerfiles + app code to Server-2
+# ----------------------------------------
+# payment-app
+scp -i "cloud-project-key.pem" "docker\payment-app\Dockerfile" ec2-user@54.209.233.61:~/apps/payment-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\payment-app\requirements.txt" ec2-user@54.209.233.61:~/apps/payment-app/requirements.txt
 scp -i "cloud-project-key.pem" "Compute 2\cloud_proj\app.py" ec2-user@54.209.233.61:~/apps/payment-app/app.py
 
-scp -i "cloud-project-key.pem" "Compute 2\cloud_proj2\flask_app\app.py" ec2-user@44.219.23.100:~/apps/recommendation-app/app.py
+# recommendation-app
+scp -i "cloud-project-key.pem" "docker\recommendation-app\Dockerfile" ec2-user@54.209.233.61:~/apps/recommendation-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\recommendation-app\requirements.txt" ec2-user@54.209.233.61:~/apps/recommendation-app/requirements.txt
 scp -i "cloud-project-key.pem" "Compute 2\cloud_proj2\flask_app\app.py" ec2-user@54.209.233.61:~/apps/recommendation-app/app.py
 
-scp -i "cloud-project-key.pem" "Compute 2\Weather.py" ec2-user@44.219.23.100:~/apps/weather-app/app.py
+# weather-app
+scp -i "cloud-project-key.pem" "docker\weather-app\Dockerfile" ec2-user@54.209.233.61:~/apps/weather-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\weather-app\requirements.txt" ec2-user@54.209.233.61:~/apps/weather-app/requirements.txt
 scp -i "cloud-project-key.pem" "Compute 2\Weather.py" ec2-user@54.209.233.61:~/apps/weather-app/app.py
 
-scp -i "cloud-project-key.pem" "Compute 2\Notification.py" ec2-user@44.219.23.100:~/apps/notification-app/app.py
+# notification-app
+scp -i "cloud-project-key.pem" "docker\notification-app\Dockerfile" ec2-user@54.209.233.61:~/apps/notification-app/Dockerfile
+scp -i "cloud-project-key.pem" "docker\notification-app\requirements.txt" ec2-user@54.209.233.61:~/apps/notification-app/requirements.txt
 scp -i "cloud-project-key.pem" "Compute 2\Notification.py" ec2-user@54.209.233.61:~/apps/notification-app/app.py
 
-# Restart all apps on both EC2 instances after updation
+# ----------------------------------------
+# STEP 3: SSH into Server-1 and build all images
+# ----------------------------------------
 ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100
-pkill -f app.py
-~/start_apps.sh
-ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61
-pkill -f app.py
-~/start_apps.sh
 
-# Update agents and dashboard on agent EC2
+# Kill any old bare-metal processes first (one-time cleanup)
+pkill -f app.py || true
+
+# Build all 4 images
+cd ~/apps/payment-app && docker build -t cloudpulse/payment-app:latest .
+cd ~/apps/recommendation-app && docker build -t cloudpulse/recommendation-app:latest .
+cd ~/apps/weather-app && docker build -t cloudpulse/weather-app:latest .
+cd ~/apps/notification-app && docker build -t cloudpulse/notification-app:latest .
+
+# Verify images exist
+docker images | grep cloudpulse
+
+# Quick test: run one container to check it works
+docker run -d --name payment-app -p 5000:5000 cloudpulse/payment-app:latest
+curl http://localhost:5000/health
+docker stop payment-app && docker rm payment-app
+
+exit
+
+# ----------------------------------------
+# STEP 4: SSH into Server-2 and build all images
+# ----------------------------------------
+ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61
+
+# Kill any old bare-metal processes first (one-time cleanup)
+pkill -f app.py || true
+
+# Build all 4 images
+cd ~/apps/payment-app && docker build -t cloudpulse/payment-app:latest .
+cd ~/apps/recommendation-app && docker build -t cloudpulse/recommendation-app:latest .
+cd ~/apps/weather-app && docker build -t cloudpulse/weather-app:latest .
+cd ~/apps/notification-app && docker build -t cloudpulse/notification-app:latest .
+
+# Verify images exist
+docker images | grep cloudpulse
+
+exit
+
+# ----------------------------------------
+# STEP 5: Update Lambda function
+# ----------------------------------------
+# Upload the updated scheduler_lambda.py to your Lambda function via the AWS Console
+# or using AWS CLI:
+# aws lambda update-function-code --function-name <your-lambda-name> --zip-file fileb://scheduler_lambda.zip
+
+# ----------------------------------------
+# STEP 6: Verify end-to-end
+# ----------------------------------------
+# Check running containers on each server:
+ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100 "docker ps -a"
+ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61 "docker ps -a"
+
+# ----------------------------------------
+# Update agents and dashboard on agent EC2 (unchanged)
+# ----------------------------------------
 scp -i "cloud-project-key.pem" "agent.py" ec2-user@98.89.93.192:~/agent.py
 scp -i "cloud-project-key.pem" "dashboard_api.py" ec2-user@98.89.93.192:~/dashboard_api.py
 scp -i "cloud-project-key.pem" "dashboard.html" ec2-user@98.89.93.192:~/dashboard.html
 
-# Restart dashboard and agents on agent EC2
-ssh -i "cloud-project-key.pem" ec2-user@98.89.93.192
-pkill -f dashboard_api.py
-nohup python3 ~/dashboard_api.py > ~/dashboard.log 2>&1 &
-pkill -f agent.py
-~/start_agents.sh
+# ----------------------------------------
+# MONITORING: Check container status anytime
+# ----------------------------------------
+# ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100 "docker ps"
+# ssh -i "cloud-project-key.pem" ec2-user@54.209.233.61 "docker ps"
+# ssh -i "cloud-project-key.pem" ec2-user@44.219.23.100 "docker logs payment-app"
